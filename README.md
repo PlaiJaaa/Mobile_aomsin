@@ -6,16 +6,25 @@ Project รายวิชา Mobile Development เขียนด้วย Flu
 
 ## วิธีรันแบบเร็วที่สุด
 
-ดับเบิลคลิก **`run_all.bat`** ครั้งเดียว จะเปิด server (หน้าต่างแยกชื่อ "dorm_app server") เปิด Android Emulator แล้วรันแอปให้เอง
-ครั้งแรกใช้เวลาประมาณ 3-7 นาที (ต้องต่ออินเทอร์เน็ต) ครั้งต่อไปเร็วขึ้นมาก
-ถ้าอยากรันบน Chrome หรือทำทีละขั้น และวิธีแก้ปัญหา ดู [HOW_TO_RUN.md](HOW_TO_RUN.md)
+- **แค่อยากเปิดใช้แอป:** ดับเบิลคลิก **`run_apk.bat`** จะเปิด server, เปิด Android Emulator แล้วติดตั้งแอปจากไฟล์ `dist/DormApp.apk` ที่ build ไว้แล้ว
+  ต้องมีแค่ Node.js และ Android Studio (มี emulator อย่างน้อย 1 เครื่อง) **ไม่ต้องมี Flutter** (เลี่ยงปัญหาเวอร์ชัน Flutter / Gradle / Java ไม่ตรงกัน)
+- **จะแก้โค้ด:** ดับเบิลคลิก **`run_all.bat`** จะเปิด server, เปิด emulator แล้ว `flutter run` ให้ (ต้องมี Flutter 3.32 ขึ้นไป)
 
-- **อย่าปิดหน้าต่าง "dorm_app server"** ระหว่างใช้แอป ปิดแอปกด `q` ในหน้าต่าง `run_all.bat`
+วิธีละเอียดทีละขั้น วิธีรันบน Chrome และวิธีแก้ปัญหา ดูที่ [HOW_TO_RUN.md](HOW_TO_RUN.md)
+
+### วิธีใช้ไฟล์ APK (`run_apk.bat`)
+
+1. ติดตั้ง **Node.js** (https://nodejs.org) และ **Android Studio** (https://developer.android.com/studio) แล้วสร้าง emulator 1 เครื่องใน Android Studio > **Device Manager** > **Create Virtual Device**
+2. ดับเบิลคลิก **`run_apk.bat`** แล้วรอจนครบ 3 ขั้น (ครั้งแรกประมาณ 2-4 นาที)
+   `[1/3]` เปิด server ในหน้าต่าง "dorm_app server" → `[2/3]` เปิด emulator → `[3/3]` ติดตั้งแอป ขึ้น `Success` แล้วแอปเปิดเอง
+3. เข้าสู่ระบบด้วยบัญชีทดสอบด้านล่าง แล้วใช้งานได้เลย
+4. ระหว่างใช้ **อย่าปิดหน้าต่าง "dorm_app server"** เลิกใช้ให้ปิดหน้าต่าง server และปิด emulator
+5. ครั้งต่อไปเปิดจากไอคอน **หอพักอุ่นใจ** ใน emulator ได้เลย (ต้องเปิด `start_server.bat` ก่อน) หรือดับเบิลคลิก `run_apk.bat` ซ้ำ
+
 - ล้างข้อมูลกลับเป็นค่าเริ่มต้นหลังทดลองใช้: ดับเบิลคลิก **`reset_data.bat`**
+- APK นี้ใช้กับ **Android Emulator** เท่านั้น (แอปเรียก server ที่ `10.0.2.2:3000`) ถ้าแก้โค้ดต้อง build ใหม่ด้วย `flutter build apk --release` แล้วคัดลอก `build\app\outputs\flutter-apk\app-release.apk` ไปทับ `dist\DormApp.apk`
 
 > server ของแอปนี้ใช้ **port 3000** ถ้าจะเปิดพร้อมแอปอื่น แอปนั้นต้องใช้ port อื่น (เช่น Travel Planner ใช้ 3001)
-
-ต้องติดตั้ง Flutter SDK 3.32 ขึ้นไป, Node.js 18 ขึ้นไป และ Android Studio (มี emulator อย่างน้อย 1 เครื่อง) ไว้ก่อน รายละเอียดอยู่ใน HOW_TO_RUN.md
 
 ### บัญชีทดสอบ
 
@@ -141,6 +150,7 @@ lib/
     ├── status_chip.dart  icon_box.dart  info_row.dart  app_logo.dart  section_title.dart
     └── app_snack_bar.dart  confirm_dialog.dart  error_view.dart  empty_view.dart
         loading_view.dart  primary_button.dart  scroll_message.dart
+dist/     DormApp.apk (APK สำเร็จรูป ใช้กับ run_apk.bat)
 server/   db.sample.json, db.json, package.json (json-server 0.17.4)
 test/     model_test, service_test, tenant_flow_test, admin_flow_test (MockClient จาก package:http/testing.dart)
 ```
