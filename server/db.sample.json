@@ -1,0 +1,27 @@
+{
+  "users": [
+    { "id": 1, "username": "admin", "password": "admin1234", "name": "สมศรี ดูแลดี", "role": "admin", "room": "-", "phone": "081-000-0001" },
+    { "id": 2, "username": "somchai", "password": "1234", "name": "สมชาย ใจดี", "role": "tenant", "room": "A101", "phone": "089-111-2222" },
+    { "id": 3, "username": "malee", "password": "1234", "name": "มาลี รักเรียน", "role": "tenant", "room": "A102", "phone": "086-333-4444" },
+    { "id": 4, "username": "wichai", "password": "1234", "name": "วิชัย ตั้งใจ", "role": "tenant", "room": "B201", "phone": "082-555-6666" }
+  ],
+  "bills": [
+    { "id": 1, "room": "A101", "month": 10, "year": 2569, "rent": 3500, "water": 100, "electric": 580, "status": "paid", "paymentRef": "TRX0001234567", "createdAt": "2026-10-01T09:00:00.000" },
+    { "id": 2, "room": "A102", "month": 10, "year": 2569, "rent": 3500, "water": 110, "electric": 498, "status": "paid", "paymentRef": "TRX0002223334", "createdAt": "2026-10-01T09:05:00.000" },
+    { "id": 3, "room": "B201", "month": 10, "year": 2569, "rent": 4200, "water": 130, "electric": 875, "status": "unpaid", "paymentRef": "", "createdAt": "2026-10-01T09:10:00.000" },
+    { "id": 4, "room": "A101", "month": 11, "year": 2569, "rent": 3500, "water": 120, "electric": 640, "status": "unpaid", "paymentRef": "", "createdAt": "2026-11-01T09:00:00.000" },
+    { "id": 5, "room": "A102", "month": 11, "year": 2569, "rent": 3500, "water": 90, "electric": 455, "status": "pending", "paymentRef": "TRX0007654321", "createdAt": "2026-11-01T09:05:00.000" },
+    { "id": 6, "room": "B201", "month": 11, "year": 2569, "rent": 4200, "water": 150, "electric": 910, "status": "unpaid", "paymentRef": "", "createdAt": "2026-11-01T09:10:00.000" }
+  ],
+  "repairs": [
+    { "id": 1, "room": "A101", "tenantName": "สมชาย ใจดี", "category": "ไฟฟ้า", "urgency": "ปกติ", "detail": "หลอดไฟในห้องน้ำขาด เปิดไม่ติด", "allowEnter": false, "status": "done", "createdAt": "2026-11-03T18:20:00.000" },
+    { "id": 2, "room": "A101", "tenantName": "สมชาย ใจดี", "category": "เครื่องปรับอากาศ", "urgency": "ด่วน", "detail": "แอร์ไม่เย็น และมีน้ำหยดลงพื้นตลอดเวลา", "allowEnter": true, "status": "in_progress", "createdAt": "2026-11-11T20:15:00.000" },
+    { "id": 3, "room": "A102", "tenantName": "มาลี รักเรียน", "category": "ประปา", "urgency": "ปกติ", "detail": "ก๊อกน้ำอ่างล้างหน้าปิดไม่สนิท น้ำหยดตลอด", "allowEnter": true, "status": "pending", "createdAt": "2026-11-12T08:40:00.000" },
+    { "id": 4, "room": "B201", "tenantName": "วิชัย ตั้งใจ", "category": "อินเทอร์เน็ต", "urgency": "ด่วนมาก", "detail": "Wi-Fi ชั้น 2 หลุดบ่อยมาก ใช้เรียนออนไลน์ไม่ได้", "allowEnter": false, "status": "pending", "createdAt": "2026-11-12T21:05:00.000" }
+  ],
+  "announcements": [
+    { "id": 1, "title": "ฉีดพ่นกำจัดยุงและแมลง", "content": "วันอาทิตย์ที่จะถึงนี้ช่วงเช้า จะมีเจ้าหน้าที่เข้ามาฉีดพ่นกำจัดยุงบริเวณทางเดินและลานจอดรถ กรุณาปิดประตูหน้าต่างและเก็บเสื้อผ้าที่ตากไว้", "isImportant": false, "createdAt": "2026-11-05T10:00:00.000" },
+    { "id": 2, "title": "กำหนดชำระค่าเช่าประจำเดือน", "content": "กรุณาชำระค่าเช่าและค่าน้ำค่าไฟภายในวันที่ 5 ของทุกเดือน โอนเงินแล้วแจ้งชำระผ่านแอปได้ที่เมนูบิล โดยกรอกเลขอ้างอิงการโอน", "isImportant": false, "createdAt": "2026-11-09T09:00:00.000" },
+    { "id": 3, "title": "แจ้งปิดน้ำชั่วคราวเพื่อล้างถังเก็บน้ำ", "content": "หอพักจะปิดน้ำชั่วคราวในวันเสาร์นี้ เวลา 10:00 - 13:00 น. เพื่อล้างถังเก็บน้ำประจำปี กรุณาสำรองน้ำไว้ใช้ล่วงหน้า ขออภัยในความไม่สะดวก", "isImportant": true, "createdAt": "2026-11-12T16:30:00.000" }
+  ]
+}

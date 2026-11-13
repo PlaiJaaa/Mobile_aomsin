@@ -1,0 +1,5 @@
+node_modules/
+
+# ข้อมูลที่แก้ระหว่างเดโม ไม่ต้องเก็บขึ้น git
+# start_server.bat / npm start จะสร้างใหม่จาก db.sample.json ให้เองถ้ายังไม่มี
+db.json

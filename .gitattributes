@@ -1,0 +1,6 @@
+# ให้ไฟล์ .bat ใช้ขึ้นบรรทัดแบบ Windows (CRLF) เสมอ ไม่ว่าเครื่องที่ clone จะตั้ง git ไว้อย่างไร
+# (cmd.exe อ่าน .bat ที่เป็น LF ผิดพลาดได้ เช่น goto หา label ไม่เจอ)
+*.bat text eol=crlf
+
+# ฟอนต์เป็นไฟล์ binary
+*.ttf binary

@@ -1,0 +1,14 @@
+{
+  "name": "dorm-app-server",
+  "version": "1.0.0",
+  "private": true,
+  "description": "REST API จำลองของแอปหอพัก (json-server)",
+  "scripts": {
+    "prestart": "node -e \"const fs=require('fs');if(!fs.existsSync('db.json')){fs.copyFileSync('db.sample.json','db.json');console.log('created db.json from db.sample.json')}\"",
+    "start": "json-server --watch db.json --host 127.0.0.1 --port 3000",
+    "reset": "node -e \"require('fs').copyFileSync('db.sample.json','db.json');console.log('reset db.json from db.sample.json')\""
+  },
+  "dependencies": {
+    "json-server": "0.17.4"
+  }
+}

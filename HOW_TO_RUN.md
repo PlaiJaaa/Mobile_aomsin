@@ -1,0 +1,262 @@
+# วิธีรันแอปหอพักอุ่นใจ (ทีละขั้น)
+
+แอปนี้มี 2 ส่วนที่ต้องเปิดพร้อมกัน
+
+1. **server** (โฟลเดอร์ `server/`): REST API จาก json-server เก็บข้อมูลในไฟล์ `server/db.json`
+2. **แอป Flutter**: รันบน Android Emulator หรือ Chrome แล้วเรียก API จาก server
+
+ต้อง **เปิด server ก่อนเสมอ** แล้วจึงรันแอป ไม่อย่างนั้นแอปจะขึ้นว่า "เชื่อมต่อ server ไม่ได้ กรุณาเปิด server ก่อน"
+
+## ทางลัด: ดับเบิลคลิก `run_all.bat` ครั้งเดียว
+
+ถ้าติดตั้งโปรแกรมใน [ขั้นที่ 1](#ขั้นที่-1-ติดตั้งโปรแกรม-ทำครั้งเดียว) ครบแล้ว และมี Android Emulator อย่างน้อย 1 เครื่อง
+ดับเบิลคลิก **`run_all.bat`** ไฟล์เดียวจะทำให้ครบทั้ง 3 อย่าง
+
+1. เปิด server ในหน้าต่างใหม่ชื่อ "dorm_app server" (ถ้าเปิดอยู่แล้วจะข้าม)
+2. เปิด emulator เครื่องแรกที่มีในเครื่อง แล้วรอจน boot เสร็จ (ถ้าเปิดอยู่แล้วจะข้าม)
+3. รัน `flutter pub get` และ `flutter run -d emulator` จนแอปขึ้นบน emulator
+
+ครั้งแรกรวมแล้วใช้เวลาประมาณ 3-7 นาที (ส่วนใหญ่คือ build Android) ครั้งต่อไปเร็วขึ้นมาก
+
+- จะมี **2 หน้าต่าง**: หน้าต่าง `run_all.bat` (แอป) และหน้าต่าง "dorm_app server" อย่าปิดหน้าต่าง server ระหว่างใช้แอป
+- ปิดแอป: กด `q` ในหน้าต่าง `run_all.bat` ส่วน server และ emulator ยังเปิดอยู่ กด `run_all.bat` ซ้ำได้เลย
+- เลิกใช้งาน: ปิดหน้าต่าง "dorm_app server" และปิด emulator
+
+ถ้าอยากรันบน Chrome หรือทำทีละขั้นเอง ทำตามขั้นที่ 2-3 ด้านล่าง
+
+---
+
+## ขั้นที่ 1 ติดตั้งโปรแกรม (ทำครั้งเดียว)
+
+| โปรแกรม | ใช้ทำอะไร | ดาวน์โหลด |
+| --- | --- | --- |
+| Flutter SDK 3.32 ขึ้นไป | รันแอป | https://docs.flutter.dev/get-started/install/windows |
+| Node.js 18 ขึ้นไป (แนะนำรุ่น LTS) | รัน server (มี npm มาด้วย) | https://nodejs.org |
+| Android Studio | มี Android SDK และ Android Emulator | https://developer.android.com/studio |
+| Google Chrome | ถ้าจะรันแอปบนเว็บ | https://www.google.com/chrome |
+| VS Code + ส่วนเสริม Flutter (ไม่บังคับ) | เปิดโค้ดและกด F5 เพื่อรัน | https://code.visualstudio.com |
+
+ติดตั้งเสร็จแล้ว เปิด Command Prompt หรือ PowerShell **หน้าต่างใหม่** แล้วเช็กเวอร์ชัน
+
+```bat
+flutter --version
+node --version
+npm --version
+flutter doctor
+```
+
+ตัวอย่างผลบนเครื่องที่ใช้ทดสอบ: Flutter 3.32.7, Node v22.20.0
+ใน `flutter doctor` ให้ดูว่าบรรทัด **Flutter**, **Android toolchain** และ **Chrome** ขึ้นเครื่องหมายถูก
+(ถ้าบอกว่า Android licenses ยังไม่ยอมรับ ให้รัน `flutter doctor --android-licenses` แล้วตอบ `y`)
+
+---
+
+## ขั้นที่ 2 เปิด server
+
+### วิธีที่ง่ายที่สุด
+
+ดับเบิลคลิกไฟล์ **`start_server.bat`** ในโฟลเดอร์โปรเจกต์
+
+- ครั้งแรกจะติดตั้ง package ให้เอง (`npm install` ใช้เวลาประมาณ 10-30 วินาที ต้องต่ออินเทอร์เน็ต)
+- ถ้ายังไม่มี `server/db.json` จะสร้างจากข้อมูลตัวอย่างให้
+- **ทิ้งหน้าต่างนี้เปิดไว้ตลอดที่ใช้แอป** ปิดหน้าต่าง = ปิด server
+
+### หรือพิมพ์คำสั่งเอง
+
+```bat
+cd server
+npm install
+npm start
+```
+
+### รู้ได้อย่างไรว่าเปิดสำเร็จ
+
+1. ในหน้าต่าง server จะมีข้อความ
+
+   ```
+   \{^_^}/ hi!
+   Loading db.json
+   Done
+   Resources
+   http://127.0.0.1:3000/users
+   ...
+   Watching...
+   ```
+
+2. เปิดเบราว์เซอร์ไปที่ **http://localhost:3000/users** ต้องเห็นข้อมูลผู้ใช้เป็น JSON
+   (ลอง http://localhost:3000/bills, http://localhost:3000/repairs, http://localhost:3000/announcements ได้เช่นกัน)
+
+ทุกครั้งที่แอปเรียก API หน้าต่าง server จะแสดงบรรทัด เช่น `GET /bills?room=A101 200` หรือ `PATCH /bills/4 200`
+ใช้ดูได้ว่าแอปเรียก method อะไร
+
+---
+
+## ขั้นที่ 3 รันแอป
+
+เปิด Command Prompt **หน้าต่างใหม่** (หน้าต่าง server ต้องเปิดค้างไว้) แล้วเข้าโฟลเดอร์โปรเจกต์
+(โฟลเดอร์ที่มีไฟล์ `pubspec.yaml` เช่น `cd C:\work\dorm_app`)
+
+```bat
+flutter pub get
+```
+
+### แบบที่ 1: Android Emulator
+
+1. เปิด emulator ด้วยวิธีใดวิธีหนึ่ง
+   - Android Studio > **Device Manager** > กดปุ่ม ▶ ที่เครื่องที่ต้องการ
+   - หรือใช้คำสั่ง
+
+     ```bat
+     flutter emulators
+     flutter emulators --launch flutter_emulator
+     ```
+
+     (`flutter_emulator` คือชื่อเครื่องบนเครื่องที่ใช้ทดสอบ ให้เปลี่ยนเป็นชื่อที่ `flutter emulators` แสดง)
+2. รอจนเห็นหน้า Home ของ Android แล้วเช็กว่า Flutter มองเห็น
+
+   ```bat
+   flutter devices
+   ```
+
+   ต้องมีบรรทัดที่ขึ้นต้นด้วย `sdk gphone ... • emulator-5554`
+3. รันแอป
+
+   ```bat
+   flutter run -d emulator
+   ```
+
+   ครั้งแรกจะ build นาน 2-5 นาที ครั้งต่อไปเร็วขึ้นมาก
+
+### แบบที่ 2: Chrome
+
+```bat
+flutter run -d chrome
+```
+
+Flutter จะเปิดหน้าต่าง Chrome ใหม่ให้เอง (ครั้งแรกใช้เวลาประมาณ 30 วินาที)
+
+### แบบที่ 3: กด F5 ใน VS Code
+
+1. เปิดโฟลเดอร์โปรเจกต์ (ที่มี `pubspec.yaml`) ใน VS Code
+2. ไปที่แถบ **Run and Debug** (Ctrl+Shift+D) เลือกจากรายการด้านบน
+   - **แอปหอพัก: Android Emulator** (ต้องเปิด emulator ไว้ก่อน)
+   - **แอปหอพัก: Chrome**
+3. กด **F5**
+
+---
+
+## ขั้นที่ 4 เข้าสู่ระบบด้วยบัญชีทดสอบ
+
+| บทบาท | ชื่อผู้ใช้ | รหัสผ่าน | ห้อง | ข้อมูลที่เตรียมไว้ |
+| --- | --- | --- | --- | --- |
+| ผู้ดูแล | `admin` | `admin1234` | - | เห็นบิลและงานซ่อมทุกห้อง |
+| ผู้เช่า | `somchai` | `1234` | A101 | ค้างชำระ 1 บิล, งานซ่อม 2 รายการ |
+| ผู้เช่า | `malee` | `1234` | A102 | แจ้งชำระแล้วรอตรวจสอบ 1 บิล |
+| ผู้เช่า | `wichai` | `1234` | B201 | ค้างชำระ 2 บิล |
+
+### ลำดับเดโมที่แนะนำ
+
+1. เข้า `somchai` > เมนูบิล > เปิดบิลที่ค้างชำระ > กรอกเลขอ้างอิง (อย่างน้อย 6 ตัว) > แจ้งชำระ (PATCH)
+2. เมนูแจ้งซ่อม > แจ้งซ่อมใหม่ > เลือกหมวดหมู่ ความเร่งด่วน กรอกรายละเอียด > ส่ง (POST)
+3. โปรไฟล์ > ลองสลับโหมดมืด > ออกจากระบบ
+4. เข้า `admin` > เมนูบิล > ตัวกรอง "รอตรวจสอบ" > ตรวจสอบการชำระ > ยืนยันรับชำระ หรือ ไม่พบยอดโอน
+5. ปุ่ม "ออกบิล" > เลือกห้อง เดือน กรอกค่าเช่า/น้ำ/ไฟ > ออกบิล (POST)
+6. เมนูงานซ่อม > รับงาน > ปิดงาน (PATCH)
+7. เมนูประกาศ > ลงประกาศ (POST) > ลบประกาศ (DELETE)
+8. กลับไปเข้า `somchai` แล้วดึงหน้าจอลงในเมนูแจ้งซ่อม จะเห็นสถานะที่ผู้ดูแลเปลี่ยน
+
+ทุกครั้งที่บันทึก เปิดไฟล์ `server/db.json` ดูได้ว่าข้อมูลถูกเขียนลงไฟล์จริง
+
+---
+
+## ขั้นที่ 5 รีเซ็ตข้อมูลกลับเป็นค่าเริ่มต้นหลังเดโม
+
+ดับเบิลคลิก **`reset_data.bat`** แล้วกดปุ่มใดก็ได้เพื่อยืนยัน
+(หรือรัน `npm run reset` ในโฟลเดอร์ `server`)
+
+- ไฟล์ `server/db.sample.json` จะถูกคัดลอกทับ `server/db.json`
+- ถ้า server เปิดอยู่ ไม่ต้องปิดเปิดใหม่ server จะโหลดไฟล์ใหม่เอง
+- ในแอปให้ดึงหน้าจอลงเพื่อโหลดใหม่ หรือออกจากระบบแล้วเข้าใหม่
+
+---
+
+## แก้ปัญหาที่เจอบ่อย
+
+### แอปขึ้นว่า "เชื่อมต่อ server ไม่ได้ กรุณาเปิด server ก่อน"
+
+1. ดูว่าหน้าต่าง server ยังเปิดอยู่และมีคำว่า `Watching...` ถ้าไม่มี ให้ดับเบิลคลิก `start_server.bat` ใหม่
+2. เปิด http://localhost:3000/users ในเบราว์เซอร์ ถ้าไม่ขึ้น JSON แปลว่า server ไม่ได้เปิด
+3. เปิด server แล้วกดปุ่ม **ลองใหม่** ในแอป หรือดึงหน้าจอลง
+4. บน Android Emulator ข้อความนี้อาจใช้เวลาประมาณ 10 วินาทีกว่าจะขึ้น (แอปรอ server ตามเวลาที่ตั้งไว้ใน `lib/constant/api_config.dart`)
+
+### port 3000 ถูกใช้อยู่ (server เปิดไม่ขึ้น มีคำว่า `EADDRINUSE`)
+
+มักเกิดจากเปิด server ซ้ำ 2 หน้าต่าง หรือมีโปรแกรมอื่นใช้ port 3000
+
+1. ปิดหน้าต่าง server อื่นที่เปิดค้างไว้ แล้วลองใหม่
+2. ถ้ายังไม่หาย หาโปรแกรมที่ใช้ port 3000 แล้วปิด
+
+   ```bat
+   netstat -ano | findstr :3000
+   taskkill /PID <เลข PID ตัวสุดท้ายของบรรทัด LISTENING> /F
+   ```
+
+3. หรือเปลี่ยน port ทั้ง 2 จุดให้ตรงกัน
+   - `server/package.json` ในคำสั่ง `start` ตรง `--port 3000`
+   - `lib/constant/api_config.dart` ตรง `const int serverPort = 3000;`
+
+### บน Chrome ขึ้น error เรื่อง CORS
+
+json-server 0.17.4 ที่ล็อกไว้ใน `server/package.json` เปิด CORS ให้อยู่แล้ว (ทดสอบแล้วว่า GET, POST, PATCH, DELETE ใช้ได้จาก Chrome)
+ถ้ายังเจอ ให้ตรวจว่า
+
+1. เปิด server ด้วย `start_server.bat` หรือ `npm start` ในโฟลเดอร์ `server` ไม่ใช่ json-server รุ่นอื่นที่ติดตั้งไว้ทั้งเครื่อง (`npm i -g`)
+2. เปิดแอปด้วย `flutter run -d chrome` ไม่ใช่ดับเบิลคลิกไฟล์ html ในโฟลเดอร์ `build`
+3. กด F12 ในหน้าต่าง Chrome > แท็บ Console ดูข้อความ error เต็ม
+
+### Emulator เรียก localhost ไม่ได้
+
+ใน Android Emulator คำว่า `localhost` หมายถึงตัว emulator เอง ไม่ใช่คอมพิวเตอร์ของเรา
+แอปนี้จัดการให้แล้ว: เมื่อรันบน Android จะเรียก `http://10.0.2.2:3000` ซึ่งเป็นที่อยู่ของคอมพิวเตอร์เมื่อมองจาก emulator
+(ตั้งไว้ใน `lib/constant/api_config.dart`) และอนุญาตให้เรียก http แบบไม่เข้ารหัสไปที่ `10.0.2.2` ไว้ใน
+`android/app/src/main/res/xml/network_security_config.xml`
+
+ถ้ายังต่อไม่ได้ ให้ลองเปิด `http://10.0.2.2:3000/users` ใน Chrome **ภายใน emulator** ถ้าเปิดไม่ได้แปลว่า server ไม่ได้เปิดอยู่บนคอมพิวเตอร์
+
+> แอปนี้ตั้งให้ใช้กับ emulator และ Chrome ในเครื่องเดียวกับ server เท่านั้น ถ้าจะใช้มือถือจริงต้องเปลี่ยนที่อยู่ server เป็น IP ของคอมพิวเตอร์ และให้ server รับการเชื่อมต่อจากเครือข่าย ซึ่งไม่ได้ตั้งไว้
+
+### `'npm' is not recognized` หรือ `'flutter' is not recognized`
+
+ยังไม่ได้ติดตั้ง หรือติดตั้งแล้วแต่ยังไม่ได้เปิดหน้าต่าง Command Prompt ใหม่ ให้ปิดแล้วเปิดใหม่ (หรือรีสตาร์ตเครื่อง)
+
+### PowerShell ขึ้นว่า `running scripts is disabled on this system` ตอนพิมพ์ npm
+
+ใช้ Command Prompt (cmd) แทน PowerShell หรือดับเบิลคลิก `start_server.bat`
+
+### `flutter run -d emulator` ขึ้นว่าไม่พบอุปกรณ์
+
+emulator ยังเปิดไม่เสร็จ รอจนเห็นหน้า Home ของ Android แล้วรัน `flutter devices` เช็กอีกครั้ง
+
+### `run_all.bat` ขึ้น "[ผิดพลาด] ..."
+
+อ่านข้อความในหน้าต่างนั้น จะบอกว่าขาดอะไร เช่น ไม่พบ flutter, ไม่พบ Node.js, ไม่พบ Android SDK,
+ยังไม่มี emulator (สร้างได้ที่ Android Studio > Device Manager > Create Virtual Device)
+หรือ server เปิดไม่สำเร็จ (ดูข้อความในหน้าต่าง "dorm_app server" เช่น port 3000 ถูกใช้อยู่)
+
+### build Android ขึ้นคำเตือนเรื่อง Android NDK
+
+ข้อความ `Your project is configured with Android NDK ... shared_preferences_android requires Android NDK ...` เป็นแค่คำเตือน
+ถ้าตามด้วย `√ Built build\app\outputs\flutter-apk\app-debug.apk` แปลว่า build สำเร็จ ไม่ต้องแก้อะไร
+
+### build Android ครั้งแรกล้มเพราะ Gradle
+
+ลองปิด Gradle ที่ค้างอยู่แล้ว build ใหม่
+
+```bat
+cd android
+gradlew --stop
+cd ..
+flutter clean
+flutter pub get
+flutter run -d emulator
+```
