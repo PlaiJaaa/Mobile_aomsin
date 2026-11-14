@@ -29,7 +29,7 @@ if not exist "db.json" (
 )
 
 echo.
-echo เปิด server ที่ http://localhost:3000  [ลองเปิด http://localhost:3000/users ในเบราว์เซอร์]
+echo เปิด server ที่ http://localhost:3000  [หน้าเว็บของแอป http://localhost:3000  ข้อมูล http://localhost:3000/users]
 echo ปิด server: กด Ctrl+C หรือปิดหน้าต่างนี้
 echo.
 call npm start

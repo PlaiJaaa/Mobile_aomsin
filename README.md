@@ -6,13 +6,29 @@ Project รายวิชา Mobile Development เขียนด้วย Flu
 
 ## วิธีรันแบบเร็วที่สุด
 
-- **แค่อยากเปิดใช้แอป:** ดับเบิลคลิก **`run_apk.bat`** จะเปิด server, เปิด Android Emulator แล้วติดตั้งแอปจากไฟล์ `dist/DormApp.apk` ที่ build ไว้แล้ว
-  ต้องมีแค่ Node.js และ Android Studio (มี emulator อย่างน้อย 1 เครื่อง) **ไม่ต้องมี Flutter** (เลี่ยงปัญหาเวอร์ชัน Flutter / Gradle / Java ไม่ตรงกัน)
-- **จะแก้โค้ด:** ดับเบิลคลิก **`run_all.bat`** จะเปิด server, เปิด emulator แล้ว `flutter run` ให้ (ต้องมี Flutter 3.32 ขึ้นไป)
+| ไฟล์ที่ดับเบิลคลิก | แอปขึ้นที่ | ต้องติดตั้ง | เหมาะกับ |
+| --- | --- | --- | --- |
+| **`run_web.bat`** (แนะนำ เบาที่สุด) | **Chrome** | Node.js + Chrome | เครื่องไม่แรง เปิด emulator ไม่ไหว อยากเปิดดูหรือเดโมเร็ว ๆ |
+| `run_apk.bat` | Android Emulator | Node.js + Android Studio | อยากเห็นบนมือถือจำลอง แต่ไม่อยาก build เอง |
+| `run_all.bat` | Android Emulator | Flutter + Node.js + Android Studio | จะแก้โค้ดแล้วรันใหม่ / hot reload |
 
-วิธีละเอียดทีละขั้น วิธีรันบน Chrome และวิธีแก้ปัญหา ดูที่ [HOW_TO_RUN.md](HOW_TO_RUN.md)
+`run_web.bat` และ `run_apk.bat` ใช้แอปที่ build ไว้แล้วในโฟลเดอร์ `dist/` **ไม่ต้องมี Flutter** (เลี่ยงปัญหาเวอร์ชัน Flutter / Gradle / Java ไม่ตรงกัน)
+วิธีละเอียดทีละขั้นและวิธีแก้ปัญหา ดูที่ [HOW_TO_RUN.md](HOW_TO_RUN.md)
 
-### วิธีใช้ไฟล์ APK (`run_apk.bat`)
+### วิธีเปิดใน Chrome (`run_web.bat`) ไม่ต้องใช้ emulator
+
+1. ติดตั้ง **Node.js** (https://nodejs.org) และ **Google Chrome** (ถ้ายังไม่มี)
+2. ดับเบิลคลิก **`run_web.bat`** แล้วรอจนครบ 2 ขั้น (ครั้งแรกประมาณ 1 นาที และต้องต่อเน็ตเพื่อติดตั้ง package ของ server)
+   `[1/2]` เปิด server ในหน้าต่าง "dorm_app server" → `[2/2]` เปิด Chrome ที่ **http://localhost:3000** ให้เอง
+3. เข้าสู่ระบบด้วยบัญชีทดสอบด้านล่าง แล้วใช้งานได้เลย
+4. อยากให้หน้าจอเป็นขนาดมือถือ: ใน Chrome กด **F12** แล้วกด **Ctrl+Shift+M** แล้วเลือกรุ่นมือถือด้านบน (เช่น Pixel 7)
+5. ระหว่างใช้ **อย่าปิดหน้าต่าง "dorm_app server"** เลิกใช้ให้ปิดหน้าต่าง server และปิดแท็บ Chrome
+6. ครั้งต่อไปดับเบิลคลิก `run_web.bat` ซ้ำได้เลย (หรือเปิด `start_server.bat` แล้วเข้า http://localhost:3000 เอง)
+
+- แอปเวอร์ชันเว็บอยู่ในโฟลเดอร์ `dist/web` โดย server ตัวเดียวกัน (port 3000) เปิดทั้งหน้าเว็บและ API ให้ จึงไม่ติดปัญหา CORS
+- ถ้าแก้โค้ด ต้อง build ใหม่ด้วย `flutter build web --release --no-web-resources-cdn` แล้วคัดลอกทุกอย่างใน `build\web` ไปทับ `dist\web` (แล้วกด Ctrl+F5 ใน Chrome)
+
+### วิธีใช้ไฟล์ APK บน emulator (`run_apk.bat`)
 
 1. ติดตั้ง **Node.js** (https://nodejs.org) และ **Android Studio** (https://developer.android.com/studio) แล้วสร้าง emulator 1 เครื่องใน Android Studio > **Device Manager** > **Create Virtual Device**
 2. ดับเบิลคลิก **`run_apk.bat`** แล้วรอจนครบ 3 ขั้น (ครั้งแรกประมาณ 2-4 นาที)
@@ -150,8 +166,8 @@ lib/
     ├── status_chip.dart  icon_box.dart  info_row.dart  app_logo.dart  section_title.dart
     └── app_snack_bar.dart  confirm_dialog.dart  error_view.dart  empty_view.dart
         loading_view.dart  primary_button.dart  scroll_message.dart
-dist/     DormApp.apk (APK สำเร็จรูป ใช้กับ run_apk.bat)
-server/   db.sample.json, db.json, package.json (json-server 0.17.4)
+dist/     DormApp.apk (APK สำเร็จรูป ใช้กับ run_apk.bat), web/ (แอปเวอร์ชันเว็บ ใช้กับ run_web.bat)
+server/   db.sample.json, db.json, package.json (json-server 0.17.4 เปิด API และหน้าเว็บจาก dist/web)
 test/     model_test, service_test, tenant_flow_test, admin_flow_test (MockClient จาก package:http/testing.dart)
 ```
 
